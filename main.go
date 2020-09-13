@@ -9,13 +9,15 @@ import (
 
 var (
 	port = flag.String("addr", ":8080", "the address to listen on")
+	dir = flag.String("dir", "data/fox",  "directory for fox")
 )
 
 func main() {
-	r := mux.NewRouter()
-	s := storage.NewFileStore("data/fox")
-	f := NewFoxServer(s)
 	flag.Parse()
+	r := mux.NewRouter()
+	s := storage.NewFileStore(*dir)
+	f := NewFoxServer(s)
+
 	r.HandleFunc("/random.{format:[a-z]+}", f.random).Methods("GET", "OPTIONS")
 	r.HandleFunc("/{id}.{format:[a-z]+}", f.get).Methods("GET", "OPTIONS")
 
